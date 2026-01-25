@@ -1,0 +1,59 @@
+name: JAL VAANI Daily Data Pipeline
+
+on:
+  schedule:
+    - cron: "0 19 * * *"   # 00:30 IST
+    - cron: "0 1 * * *"    # 06:30 IST
+    - cron: "0 7 * * *"    # 12:30 IST
+    - cron: "0 13 * * *"   # 18:30 IST
+
+  workflow_dispatch:
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run GWL Scraper
+      run: python SCRIPTS/gwl_data_scraper.py
+
+    - name: Run Rain Scraper
+      run: python SCRIPTS/rain_data_scraper.py
+
+    - name: Sort DateTime Ascending
+      run: python SCRIPTS/sort_ascending_dt.py
+
+    - name: Add Seasonal Features
+      run: python SCRIPTS/add_seasonal_features.py
+
+    - name: Extract Clean Data
+      run: python SCRIPTS/data_extractor.py
+
+    - name: Build Recharge Dataset
+      run: python SCRIPTS/build_recharge_dataset.py
+
+    - name: Clean Recharge Dataset
+      run: python SCRIPTS/clean_recharge_dataset.py
+
+    - name: Add Lag Features
+      run: python SCRIPTS/add_lag_features.py
+
+    - name: Fix Recharge Outliers
+      run: python SCRIPTS/fix_recharge_outliers.py
+
+    - name: Train Recharge Random Forest
+      run: python SCRIPTS/train_rf_recharge.py
