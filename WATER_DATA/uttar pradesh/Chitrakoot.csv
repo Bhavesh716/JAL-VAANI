@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+250400081060001,Manikpur,25.0667,81.1,uttar pradesh,Chitrakoot,2.08,24.38,Unconfined,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

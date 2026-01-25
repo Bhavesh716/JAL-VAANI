@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+202440072531001,Dabhel,20.4111,72.8861,gujarat,daman,7.89,7.5,Unconfined,2023-05-30,5,0.49999999999999994,-0.8660254037844387

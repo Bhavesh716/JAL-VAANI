@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+261927080162801,Bidhnu_pz_GWD,26.3242,80.2744,uttar pradesh,Kanpur nagar,3.02,50.0,Unconfined,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

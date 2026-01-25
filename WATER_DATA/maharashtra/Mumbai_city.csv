@@ -1,0 +1,3 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+185348072484001,Colaba (Dandi),18.8967,72.8111,maharashtra,Mumbai city,2.9,5.04,Unconfined,2023-01-18 10:00:00,1,0.4999999999999999,0.8660254037844387
+185348072484001,Colaba (Dandi),18.8967,72.8111,maharashtra,Mumbai city,3.7,5.04,Unconfined,2023-05-10 10:00:00,5,0.4999999999999999,-0.8660254037844387

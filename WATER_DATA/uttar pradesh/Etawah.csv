@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+264648079003601,Pakkatal,26.78,79.01,uttar pradesh,Etawah,4.99,,,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

@@ -1,0 +1,3 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+193254077162901,Bolda,19.5483,77.2747,maharashtra,Hingoli,4.6,9.8,Unconfined,2023-01-25 10:00:00,1,0.4999999999999999,0.8660254037844387
+193254077162901,Bolda,19.5483,77.2747,maharashtra,Hingoli,6.7,9.8,Unconfined,2023-05-10 10:00:00,5,0.4999999999999999,-0.8660254037844387

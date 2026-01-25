@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+265504079344801,Haseran Pz-GWD,26.9178,79.58,uttar pradesh,Kannauj,0.0,55.0,Unconfined,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

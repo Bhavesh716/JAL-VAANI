@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+282920080385801,Dudhwa f.r.h.,28.4889,80.6494,uttar pradesh,Kheri,7.25,14.68,Unconfined,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

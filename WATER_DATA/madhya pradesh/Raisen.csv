@@ -1,0 +1,4 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+231800078262302,Silwani,23.3,78.4397,madhya pradesh,Raisen,6.29,15.0,Unconfined,2023-01-10,1,0.49999999999999994,0.8660254037844387
+231800078262302,Silwani,23.3,78.4397,madhya pradesh,Raisen,10.22,15.0,Unconfined,2023-05-20,5,0.49999999999999994,-0.8660254037844387
+231800078262302,Silwani,23.3,78.4397,madhya pradesh,Raisen,6.4,15.0,Unconfined,2023-08-20,8,-0.8660254037844385,-0.5000000000000004

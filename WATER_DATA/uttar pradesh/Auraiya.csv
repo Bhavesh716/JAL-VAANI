@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+263500079281501,Phaphund,26.5833,79.4708,uttar pradesh,Auraiya,4.93,7.17,Unconfined,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

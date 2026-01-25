@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+263600079584801,Sahtawanpurwa,26.6,79.98,uttar pradesh,Kanpur dehat,2.05,,,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

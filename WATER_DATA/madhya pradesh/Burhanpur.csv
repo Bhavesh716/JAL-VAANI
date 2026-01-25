@@ -1,0 +1,4 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+210906076094201,Ichchapur,21.1517,76.1617,madhya pradesh,Burhanpur,8.63,15.5,Unconfined,2023-01-10,1,0.4999999999999999,0.8660254037844387
+210906076094201,Ichchapur,21.1517,76.1617,madhya pradesh,Burhanpur,8.015135135135136,15.5,Unconfined,2023-05-20,5,0.4999999999999999,-0.8660254037844387
+210906076094201,Ichchapur,21.1517,76.1617,madhya pradesh,Burhanpur,7.58,15.5,Unconfined,2023-08-20,8,-0.8660254037844385,-0.5000000000000004

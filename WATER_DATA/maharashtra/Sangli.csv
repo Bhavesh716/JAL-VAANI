@@ -1,0 +1,3 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+165713074243401,Ashta,16.9536,74.4094,maharashtra,Sangli,4.25,11.5,Unconfined,2023-02-13 10:00:00,2,0.8660254037844386,0.5000000000000001
+165713074243401,Ashta,16.9536,74.4094,maharashtra,Sangli,9.85,11.5,Unconfined,2023-05-10 10:00:00,5,0.4999999999999999,-0.8660254037844387

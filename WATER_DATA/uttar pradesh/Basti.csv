@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+264600082332301,Captainganj1,26.7667,82.5564,uttar pradesh,Basti,2.66,6.16,Unconfined,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

@@ -1,0 +1,31 @@
+====== RECHARGE PREDICTION MODEL REPORT ======
+
+Total Samples: 3925
+Training Samples: 3140
+Testing Samples: 785
+
+---- Performance Metrics ----
+RMSE (meters): 1.578
+MAE  (meters): 0.972
+R2 Score     : 0.2015
+Mean Target Magnitude: 1.096
+
+---- Confidence Interval ----
+95% CI Range: ±3.090 meters
+
+---- Physical Constraints ----
+Prediction Clamp Range: -6 to 6 meters/month
+
+---- Feature Importance ----
+gw_delta_lag1        : 0.2957
+gw_delta_lag2        : 0.1242
+rain_total           : 0.1049
+rain_total_lag1      : 0.0930
+rain_avg             : 0.0790
+rain_total_lag2      : 0.0753
+temp_avg             : 0.0712
+temp_avg_lag1        : 0.0584
+well_depth           : 0.0574
+soil                 : 0.0192
+aquifer_type         : 0.0139
+urban                : 0.0079

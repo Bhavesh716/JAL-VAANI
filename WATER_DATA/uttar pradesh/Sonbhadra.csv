@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+240028082541201,Jarha,24.0078,82.9033,uttar pradesh,Sonbhadra,8.17,13.66,Unconfined,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

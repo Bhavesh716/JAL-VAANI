@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+284251079531201,Bhamora,28.7142,79.8867,uttar pradesh,Pilibhit,2.86,7.72,Unconfined,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

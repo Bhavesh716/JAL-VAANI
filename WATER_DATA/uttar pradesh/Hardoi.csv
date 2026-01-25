@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+270930080203001,Kachauna,27.1583,80.3417,uttar pradesh,Hardoi,2.69,6.5,Unconfined,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

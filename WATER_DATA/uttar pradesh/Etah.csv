@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+272800078180001,Jalesar,27.4664,78.3,uttar pradesh,Etah,0.0,20.0,Unconfined,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

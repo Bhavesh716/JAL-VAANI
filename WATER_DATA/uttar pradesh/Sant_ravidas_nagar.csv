@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+252245082253001,Pali1,25.3792,82.425,uttar pradesh,Sant ravidas nagar,7.2,18.22,Unconfined,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

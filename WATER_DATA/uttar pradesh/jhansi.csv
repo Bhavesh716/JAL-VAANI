@@ -1,0 +1,2 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+255012078542801,Samthar,25.8367,78.9078,uttar pradesh,jhansi,5.19,15.54,Unconfined,2023-01-31 09:00:00,1,0.49999999999999994,0.8660254037844387

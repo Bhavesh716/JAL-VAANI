@@ -1,0 +1,4 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+223735077382001,DolariaDW,22.6264,77.6389,madhya pradesh,Hoshangabad,8.35,9.13,Unconfined,2023-01-10,1,0.4999999999999999,0.8660254037844387
+223735077382001,DolariaDW,22.6264,77.6389,madhya pradesh,Hoshangabad,7.822973148648648,9.13,Unconfined,2023-05-20,5,0.4999999999999999,-0.8660254037844387
+223735077382001,DolariaDW,22.6264,77.6389,madhya pradesh,Hoshangabad,7.4500003,9.13,Unconfined,2023-08-20,8,-0.8660254037844385,-0.5000000000000004

@@ -1,0 +1,4 @@
+stationCode,stationName,latitude,longitude,state,district,water_level,wellDepth,aquiferType,datetime,month,sin_month,cos_month
+261321077210701,Mangrol,26.2225,77.3519,madhya pradesh,Morena,4.2,18.0,Unconfined,2023-01-10,1,0.4999999999999999,0.8660254037844387
+261321077210701,Mangrol,26.2225,77.3519,madhya pradesh,Morena,5.3,18.0,Unconfined,2023-05-20,5,0.4999999999999999,-0.8660254037844387
+261321077210701,Mangrol,26.2225,77.3519,madhya pradesh,Morena,3.0,18.0,Unconfined,2023-08-20,8,-0.8660254037844385,-0.5000000000000004
