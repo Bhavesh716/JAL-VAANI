@@ -1,7 +1,6 @@
 import requests
 import csv
 import time
-from collections import Counter
 from datetime import datetime, timedelta
 import os
 import sys
@@ -14,10 +13,10 @@ BASE_URL = "https://indiawris.gov.in/Dataset/Ground Water Level"
 AGENCY = "CGWB"
 PAGE_SIZE = 1000
 
-REQUEST_SLEEP = 1.5
-DISTRICT_COOLDOWN = 20
-RETRY_SLEEP = 10
-MAX_RETRIES = 8
+REQUEST_SLEEP = 1
+DISTRICT_COOLDOWN = 3
+RETRY_SLEEP = 5
+MAX_RETRIES = 3
 
 STATES = {
     "maharashtra": ["Amaravati","Amravati","Aurangabad","Beed","Bhandara","Buldana","Chandrapur","Dhule","Gadchiroli","Gondia","Hingoli","Jalgaon","Jalna","Kolhapur","Latur","Mumbai city","Mumbai suburban","Nagpur","Nanded","Nandurbar","Nashik","Osmanabad","Palghar","Parbhani","Pune","Raigad","Ratnagiri","Sangli","Satara","Sindudurg","Solapur","Thane","Wardha","Washim","Yavatmal"],
@@ -27,27 +26,9 @@ STATES = {
     "gujarat": ["ahmedabad","amreli","anand","aravalli","banaskantha","bharuch","bhavnagar","chhota udaipur","daman","dang","devbhumi dwarka","diu","dohad","gandhinagar","jamnagar","junagadh","kachchh","kheda","mehsana","narmada","navsari","panchmahals","patan","porbandar","rajkot","sabarkantha","surat","surendranagar","vadodara","valsad"]
 }
 
-
 def safe_print(msg):
     print(msg)
     sys.stdout.flush()
-
-
-def get_last_datetime(file_path):
-
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            rows = list(csv.reader(f))
-
-        if len(rows) <= 1:
-            return None
-
-        last_row = rows[-1]
-        return datetime.strptime(last_row[-1], "%Y-%m-%d %H:%M:%S")
-
-    except:
-        return None
-
 
 def fetch_page_safe(state, district, start, end, page):
 
@@ -62,23 +43,19 @@ def fetch_page_safe(state, district, start, end, page):
         "size": PAGE_SIZE
     }
 
-    for attempt in range(MAX_RETRIES):
-
+    for _ in range(MAX_RETRIES):
         try:
             r = requests.post(BASE_URL, params=params, timeout=40)
-
             if r.status_code == 200:
                 return r.json()
-
         except:
             pass
 
-        time.sleep(RETRY_SLEEP * (attempt + 1))
+        time.sleep(RETRY_SLEEP)
 
     return {"data": []}
 
-
-def parse_datetime_safe(t):
+def parse_api_datetime(t):
 
     try:
         if isinstance(t, dict):
@@ -91,84 +68,77 @@ def parse_datetime_safe(t):
             )
         else:
             return datetime.fromisoformat(t.replace("Z", ""))
-
     except:
         return None
 
+def read_csv_station_and_last_dt(file_path):
 
-def find_best_well(state, district):
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            rows = list(csv.reader(f))
 
-    counter = Counter()
-    meta_cache = {}
+        if len(rows) <= 1:
+            return None, None
 
-    page = 0
+        last = rows[-1]
+        station_code = last[0]
+        last_dt = datetime.strptime(last[9], "%Y-%m-%d %H:%M:%S")
 
-    start_scan = "2024-01-01"
-    end_scan = datetime.now().strftime("%Y-%m-%d")
+        return station_code, last_dt
 
-    while True:
-
-        data = fetch_page_safe(state, district, start_scan, end_scan, page)
-        records = data.get("data", [])
-
-        if not records:
-            break
-
-        for r in records:
-            code = r.get("stationCode")
-
-            if not code:
-                continue
-
-            counter[code] += 1
-            meta_cache[code] = r
-
-        page += 1
-        time.sleep(REQUEST_SLEEP)
-
-    if not counter:
+    except:
         return None, None
 
-    best = counter.most_common(1)[0][0]
-    return best, meta_cache[best]
+def update_history(state, district):
 
-
-def update_history(state, district, station_code, meta):
+    safe_print(f"\nSTARTING {state}/{district}")
 
     state_folder = os.path.join(WATER_ROOT, state)
     os.makedirs(state_folder, exist_ok=True)
 
     file_path = os.path.join(state_folder, district.replace(" ", "_") + ".csv")
 
-    now_str = datetime.now().strftime("%Y-%m-%d")
+    today = datetime.now().strftime("%Y-%m-%d")
 
     if os.path.exists(file_path):
-        last_dt = get_last_datetime(file_path)
 
-        if not last_dt:
-            start_date = "2024-01-01"
-        else:
-            start_date = (last_dt + timedelta(minutes=1)).strftime("%Y-%m-%d")
+        station_code, last_dt = read_csv_station_and_last_dt(file_path)
+
+        if not station_code or not last_dt:
+            safe_print(f"{district} skipped (bad csv)")
+            return
+
+        start_date = (last_dt + timedelta(hours=1)).strftime("%Y-%m-%d")
 
     else:
-        start_date = "2024-01-01"
+
+        start_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
+
+        data = fetch_page_safe(state, district, start_date, today, 0)
+        records = data.get("data", [])
+
+        if not records:
+            safe_print(f"{district} skipped (no data last 7 days)")
+            return
+
+        station_code = records[0].get("stationCode")
 
         with open(file_path, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow([
                 "stationCode","stationName","latitude","longitude",
                 "state","district","water_level","wellDepth",
-                "aquiferType","datetime"
+                "aquiferType","datetime","month","sin_month","cos_month"
             ])
 
-    safe_print(f"{district} updating from {start_date} → {now_str}")
+    safe_print(f"{district} fetching {start_date} → {today}")
 
     page = 0
     new_rows = 0
 
     while True:
 
-        data = fetch_page_safe(state, district, start_date, now_str, page)
+        data = fetch_page_safe(state, district, start_date, today, page)
         records = data.get("data", [])
 
         if not records:
@@ -183,50 +153,96 @@ def update_history(state, district, station_code, meta):
                 if r.get("stationCode") != station_code:
                     continue
 
-                dt = parse_datetime_safe(r.get("dataTime"))
-
+                dt = parse_api_datetime(r.get("dataTime"))
                 if not dt:
                     continue
 
+                month = dt.month
+                sin_m = round(__import__("math").sin(2 * 3.14159 * month / 12), 8)
+                cos_m = round(__import__("math").cos(2 * 3.14159 * month / 12), 8)
+
                 writer.writerow([
                     station_code,
-                    meta.get("stationName",""),
-                    meta.get("latitude",""),
-                    meta.get("longitude",""),
+                    r.get("stationName",""),
+                    r.get("latitude",""),
+                    r.get("longitude",""),
                     state.replace("_"," "),
                     district,
                     r.get("dataValue",""),
-                    meta.get("wellDepth",""),
-                    meta.get("wellAquiferType",""),
-                    dt.strftime("%Y-%m-%d %H:%M:%S")
+                    r.get("wellDepth",""),
+                    r.get("wellAquiferType",""),
+                    dt.strftime("%Y-%m-%d %H:%M:%S"),
+                    month,
+                    sin_m,
+                    cos_m
                 ])
 
                 new_rows += 1
+
+        if len(records) < PAGE_SIZE:
+            break
 
         page += 1
         time.sleep(REQUEST_SLEEP)
 
     safe_print(f"{district} appended rows: {new_rows}")
 
+def deduplicate_all_csv():
 
-print("\n===== WRIS INCREMENTAL UPDATE STARTED =====\n")
+    safe_print("\n===== DUPLICATION CLEANUP STARTED =====")
+
+    for root, _, files in os.walk(WATER_ROOT):
+
+        for file in files:
+
+            if not file.endswith(".csv"):
+                continue
+
+            path = os.path.join(root, file)
+
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    rows = list(csv.reader(f))
+
+                if len(rows) <= 1:
+                    continue
+
+                header = rows[0]
+                data = rows[1:]
+
+                seen = set()
+                unique_rows = []
+
+                for row in data:
+                    key = (row[0], row[9])
+                    if key not in seen:
+                        seen.add(key)
+                        unique_rows.append(row)
+
+                with open(path, "w", newline="", encoding="utf-8") as f:
+                    writer = csv.writer(f)
+                    writer.writerow(header)
+                    writer.writerows(unique_rows)
+
+                safe_print(f"{file} cleaned: {len(data)} → {len(unique_rows)}")
+
+            except Exception as e:
+                safe_print(f"{file} cleanup failed")
+
+    safe_print("\n===== DUPLICATION CLEANUP DONE =====")
+
+print("\n===== WRIS INCREMENTAL UPDATE STARTED =====")
 
 for state in STATES:
-
     for district in STATES[state]:
 
         try:
-
-            well, meta = find_best_well(state, district)
-
-            if not well:
-                continue
-
-            update_history(state, district, well, meta)
-
+            update_history(state, district)
         except Exception as e:
             safe_print("FAILED:", district, e)
 
         time.sleep(DISTRICT_COOLDOWN)
 
-print("\n===== WRIS UPDATE COMPLETE =====\n")
+deduplicate_all_csv()
+
+print("\n===== WRIS UPDATE COMPLETE =====")
