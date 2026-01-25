@@ -2,10 +2,7 @@ name: JAL VAANI Daily Data Pipeline
 
 on:
   schedule:
-    - cron: "0 19 * * *"   # 00:30 IST
-    - cron: "0 1 * * *"    # 06:30 IST
-    - cron: "0 7 * * *"    # 12:30 IST
-    - cron: "0 13 * * *"   # 18:30 IST
+    - cron: "30 0 * * *"   # 6:00 IST
 
   workflow_dispatch:
 
@@ -60,8 +57,8 @@ jobs:
 
     - name: Commit and push updated data
       run: |
-        git config --global user.name "jal-vaani-bot"
-        git config --global user.email "bot@users.noreply.github.com"
+        git config --global user.name "Bhavesh Gudlani"
+        git config --global user.email "bhaveshgudlani716@gmail.com"
 
         git add .
 
