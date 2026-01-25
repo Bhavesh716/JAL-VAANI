@@ -1,7 +1,5 @@
 # JAL-VAANI
 
-![JAL VAANI Banner](SCRIPTS/banner.png)
-
 ## 🌍 Groundwater Intelligence System — India (Ground-Water Level Predictions + Recharge Trends using AI)
 
 End-to-End Automated Groundwater Forecasting & Recharge Prediction Platform
