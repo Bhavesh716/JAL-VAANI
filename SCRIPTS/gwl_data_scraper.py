@@ -80,14 +80,26 @@ def read_csv_station_and_last_dt(file_path):
         if len(rows) <= 1:
             return None, None
 
-        last = rows[-1]
-        station_code = last[0]
-        last_dt = datetime.strptime(last[9], "%Y-%m-%d %H:%M:%S")
+        for row in reversed(rows):
 
-        return station_code, last_dt
+            if not row:
+                continue
+
+            if len(row) < 10:
+                continue
+
+            try:
+                station_code = row[0].strip()
+                last_dt = datetime.strptime(row[9].strip(), "%Y-%m-%d %H:%M:%S")
+                return station_code, last_dt
+            except:
+                continue
+
+        return None, None
 
     except:
         return None, None
+
 
 def update_history(state, district):
 
