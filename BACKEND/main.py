@@ -76,9 +76,7 @@ def login(email: str, password: str, db: Session = Depends(get_db)):
     if not user:
         return {"status": "fail"}
 
-    valid = verify_password(password, user.password)
-
-    if not valid:
+    if password!=user.password:
         return {"status": "fail"}
 
     return {
