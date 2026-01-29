@@ -4,6 +4,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from BACKEND.latest_water_api import get_latest_water_snapshot
 from BACKEND.search_data_engine import get_district_stats
+from BACKEND.analysis_engine import get_analysis_data
+
 
 DATABASE_URL = "sqlite:///./users.db"
 
@@ -128,3 +130,7 @@ def latest_water_map_data():
 @app.get("/district_stats")
 def district_stats(state: str, district: str):
     return get_district_stats(state, district)
+
+@app.get("/analysis_data")
+def analysis(state: str, district: str):
+    return get_analysis_data(state, district)
