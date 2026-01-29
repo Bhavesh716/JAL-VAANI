@@ -21,6 +21,7 @@ class User(Base):
     name = Column(String, nullable=False)
     email = Column(String, unique=True, index=True)
     password = Column(String, nullable=False)
+    user_role = Column(String, default="citizen")
 
 
 Base.metadata.create_all(bind=engine)
@@ -35,6 +36,13 @@ def get_db():
     finally:
         db.close()
 
+def force_all_users_citizen():
+    db = SessionLocal()
+    db.query(User).update({User.user_role: "citizen"})
+    db.commit()
+    db.close()
+
+
 
 @app.post("/register")
 def register(name: str, email: str, password: str, db: Session = Depends(get_db)):
@@ -47,7 +55,8 @@ def register(name: str, email: str, password: str, db: Session = Depends(get_db)
     user = User(
         name=name,
         email=email,
-        password=password
+        password=password,
+        user_role="citizen"
     )
 
     db.add(user)
