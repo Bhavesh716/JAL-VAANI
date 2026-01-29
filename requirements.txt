@@ -1,7 +1,6 @@
 fastapi
 uvicorn
 sqlalchemy
-passlib[bcrypt]
 pydantic
 pandas
 numpy
