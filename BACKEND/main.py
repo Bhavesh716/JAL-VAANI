@@ -25,6 +25,7 @@ class User(Base):
 
 
 Base.metadata.create_all(bind=engine)
+force_all_users_citizen()
 
 app = FastAPI()
 
@@ -35,6 +36,7 @@ def get_db():
         yield db
     finally:
         db.close()
+        
 
 def force_all_users_citizen():
     db = SessionLocal()
