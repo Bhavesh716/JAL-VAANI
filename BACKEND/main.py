@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-from latest_water_api import get_latest_water_snapshot
+from BACKEND.latest_water_api import get_latest_water_snapshot
 
 
 DATABASE_URL = "sqlite:///./users.db"
