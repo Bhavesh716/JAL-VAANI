@@ -1,8 +1,9 @@
 import os
 import csv
 
-ROOT = ".."
-WATER_ROOT = os.path.join(ROOT, "WATER_DATA")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+WATER_ROOT = os.path.join(BASE_DIR, "WATER_DATA")
+
 
 
 def clamp(x):
