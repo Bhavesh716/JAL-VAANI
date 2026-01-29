@@ -150,24 +150,56 @@ def calculate_evapo(temp):
 
 # ---------------- RECHARGE ----------------
 
-def calculate_recharge(rain, evapo, soil, urban):
+def get_monthly_recharge(state, district, soil, urban):
 
-    effective = max(0, rain - evapo)
+    file_path = os.path.join(RAIN_DATA, state, district.replace(" ", "_") + "_rain.csv")
 
-    if urban == 1:
-        factor = 0.15
+    if not os.path.exists(file_path):
+        return None
 
-    else:
-        if soil in ["black", "alluvial"]:
-            factor = 0.30
-        elif soil in ["red", "laterite"]:
-            factor = 0.25
-        elif soil == "sandy":
-            factor = 0.20
+    with open(file_path, "r", encoding="utf-8") as f:
+        rows = list(csv.reader(f))
+
+    valid = []
+
+    for row in rows:
+
+        if len(row) < 4:
+            continue
+
+        if row[0].isdigit():
+            try:
+                rain = float(row[-2])
+                temp = float(row[-1])
+                evapo = temp * 0.5
+                valid.append((rain, evapo))
+            except:
+                continue
+
+    last_30 = valid[-30:]
+
+    total = 0
+
+    for rain, evapo in last_30:
+
+        effective = max(0, rain - evapo)
+
+        if urban == 1:
+            factor = 0.15
         else:
-            factor = 0.25
+            if soil in ["black","alluvial"]:
+                factor = 0.30
+            elif soil in ["red","laterite"]:
+                factor = 0.25
+            elif soil == "sandy":
+                factor = 0.20
+            else:
+                factor = 0.25
 
-    return round(effective * factor, 2)
+        total += effective * factor
+
+    return round(total, 2)
+
 
 
 # ---------------- MAIN FUNCTION ----------------
@@ -206,7 +238,7 @@ def get_district_stats(state, district):
 
     urban = is_urban(district)
 
-    recharge = calculate_recharge(rain, evapo, soil, urban)
+    recharge = get_monthly_recharge(state, district, soil, urban)
 
     return {
         "status": "ok",
