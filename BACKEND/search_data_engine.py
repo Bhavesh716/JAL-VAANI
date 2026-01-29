@@ -72,34 +72,40 @@ def get_latest_water(state, district):
 
 def get_latest_rain_and_temp(state, district):
 
-    file_path = os.path.join(RAIN_DATA, state, district.replace(" ", "_") + ".csv")
+    file_path = os.path.join(RAIN_DATA, state, district.replace(" ", "_") + "_rain.csv")
 
     if not os.path.exists(file_path):
         print("RAIN FILE NOT FOUND:", file_path)
         return None, None
 
     with open(file_path, "r", encoding="utf-8") as f:
-        reader = csv.reader(f)
+        rows = list(csv.reader(f))
 
-        valid_rows = []
+    data_rows = []
 
-        for row in reader:
-            if len(row) == 4 and row[0].isdigit():
-                valid_rows.append(row)
+    for row in rows:
 
-    if not valid_rows:
-        print("NO VALID RAIN ROWS FOUND")
+        if len(row) < 4:
+            continue
+
+        # numeric date row
+        if row[0].isdigit():
+
+            try:
+                rain = float(row[-2])
+                temp = float(row[-1])
+
+                data_rows.append((rain, temp))
+
+            except:
+                continue
+
+    if not data_rows:
+        print("NO VALID RAIN DATA FOUND")
         return None, None
 
-    last = valid_rows[-1]
+    return data_rows[-1]
 
-    try:
-        rain = float(last[2])
-        temp = float(last[3])
-        return rain, temp
-    except Exception as e:
-        print("RAIN PARSE ERROR:", e)
-        return None, None
 
 
 
