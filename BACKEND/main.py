@@ -100,3 +100,18 @@ def login(email: str, password: str, db: Session = Depends(get_db)):
 @app.get("/")
 def root():
     return {"server": "running"}
+
+@app.get("/all_users")
+def get_all_users(db: Session = Depends(get_db)):
+    users = db.query(User).all()
+
+    data = []
+
+    for u in users:
+        data.append({
+            "name": u.name,
+            "email": u.email,
+            "user_role": u.user_role
+        })
+
+    return data
