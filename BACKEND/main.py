@@ -2,7 +2,6 @@ from fastapi import FastAPI, Depends
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-from passlib.context import CryptContext
 
 DATABASE_URL = "sqlite:///./users.db"
 
@@ -13,8 +12,6 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class User(Base):
 
@@ -39,14 +36,6 @@ def get_db():
         db.close()
 
 
-def hash_password(password):
-    return pwd_context.hash(password)
-
-
-def verify_password(plain, hashed):
-    return pwd_context.verify(plain, hashed)
-
-
 @app.post("/register")
 def register(name: str, email: str, password: str, db: Session = Depends(get_db)):
 
@@ -55,12 +44,10 @@ def register(name: str, email: str, password: str, db: Session = Depends(get_db)
     if existing_user:
         return {"status": "fail", "message": "Email already exists"}
 
-    hashed = hash_password(password)
-
     user = User(
         name=name,
         email=email,
-        password=hashed
+        password=password
     )
 
     db.add(user)
