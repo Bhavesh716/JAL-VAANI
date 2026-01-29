@@ -2,6 +2,8 @@ from fastapi import FastAPI, Depends
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+from latest_water_api import get_latest_water_snapshot
+
 
 DATABASE_URL = "sqlite:///./users.db"
 
@@ -101,6 +103,7 @@ def login(email: str, password: str, db: Session = Depends(get_db)):
 def root():
     return {"server": "running"}
 
+
 @app.get("/all_users")
 def get_all_users(db: Session = Depends(get_db)):
     users = db.query(User).all()
@@ -115,3 +118,9 @@ def get_all_users(db: Session = Depends(get_db)):
         })
 
     return data
+
+
+@app.get("/latest_water_map_data")
+def latest_water_map_data():
+    return get_latest_water_snapshot()
+
