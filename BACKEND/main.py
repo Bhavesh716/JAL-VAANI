@@ -24,6 +24,13 @@ class User(Base):
     user_role = Column(String, default="citizen")
 
 
+
+def force_all_users_citizen():
+    db = SessionLocal()
+    db.query(User).update({User.user_role: "citizen"})
+    db.commit()
+    db.close()
+
 Base.metadata.create_all(bind=engine)
 force_all_users_citizen()
 
@@ -36,13 +43,6 @@ def get_db():
         yield db
     finally:
         db.close()
-        
-
-def force_all_users_citizen():
-    db = SessionLocal()
-    db.query(User).update({User.user_role: "citizen"})
-    db.commit()
-    db.close()
 
 
 
