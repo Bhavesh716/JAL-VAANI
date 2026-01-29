@@ -3,4 +3,11 @@ uvicorn
 sqlalchemy
 passlib[bcrypt]
 pydantic
+pandas
+numpy
+matplotlib
+scikit-learn
+statsmodels
 requests
+joblib
+python-dateutil
