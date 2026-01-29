@@ -80,14 +80,9 @@ def get_latest_water_snapshot():
             normalized = clamp(normalized)
 
             output.append({
-                "state": data["state"],
-                "district": data["district"],
-                "lat": data["latitude"],
-                "lon": data["longitude"],
-                "datetime": data["datetime"],
-                "water_level": wl,
-                "well_depth": depth,
-                "normalized": round(normalized, 3)
+                "d": data["district"],
+                "n": round(normalized, 3)
             })
+
 
     return output
