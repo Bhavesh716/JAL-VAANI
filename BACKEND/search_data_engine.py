@@ -75,24 +75,32 @@ def get_latest_rain_and_temp(state, district):
     file_path = os.path.join(RAIN_DATA, state, district.replace(" ", "_") + ".csv")
 
     if not os.path.exists(file_path):
+        print("RAIN FILE NOT FOUND:", file_path)
         return None, None
 
     with open(file_path, "r", encoding="utf-8") as f:
-        rows = list(csv.reader(f))
+        reader = csv.reader(f)
 
-    for row in reversed(rows):
+        valid_rows = []
 
-        if len(row) < 4:
-            continue
+        for row in reader:
+            if len(row) == 4 and row[0].isdigit():
+                valid_rows.append(row)
 
-        try:
-            rain = float(row[2])
-            temp = float(row[3])
-            return rain, temp
-        except:
-            continue
+    if not valid_rows:
+        print("NO VALID RAIN ROWS FOUND")
+        return None, None
 
-    return None, None
+    last = valid_rows[-1]
+
+    try:
+        rain = float(last[2])
+        temp = float(last[3])
+        return rain, temp
+    except Exception as e:
+        print("RAIN PARSE ERROR:", e)
+        return None, None
+
 
 
 # ---------------- SOIL TYPE ----------------
