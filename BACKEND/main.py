@@ -8,7 +8,11 @@ from BACKEND.analysis_engine import get_analysis
 from BACKEND.prediction_engine import get_prediction
 
 import joblib
-recharge_model = joblib.load("../MODELS/recharge_rf_model.pkl")
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODEL_PATH = os.path.join(BASE_DIR, "MODELS", "recharge_rf_model.pkl")
+MODEL_PATH = os.path.abspath(MODEL_PATH)
+recharge_model = joblib.load(MODEL_PATH)
 
 
 DATABASE_URL = "sqlite:///./users.db"
