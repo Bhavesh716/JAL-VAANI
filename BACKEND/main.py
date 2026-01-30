@@ -11,7 +11,7 @@ import os
 import joblib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODEL_PATH = os.path.join(BASE_DIR, "MODELS", "recharge_rf_model.pkl")
+MODEL_PATH = os.path.join(ROOT, "MODELS", "recharge_rf_model.pkl")
 MODEL_PATH = os.path.abspath(MODEL_PATH)
 recharge_model = joblib.load(MODEL_PATH)
 
