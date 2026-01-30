@@ -7,6 +7,7 @@ from BACKEND.search_data_engine import get_district_stats
 from BACKEND.analysis_engine import get_analysis
 from BACKEND.prediction_engine import get_prediction
 
+import os
 import joblib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
