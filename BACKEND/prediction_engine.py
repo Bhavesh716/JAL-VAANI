@@ -41,19 +41,17 @@ def get_latest_rain_temp(state, district):
     with open(rain_file, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
-    data_start = 0
+    start = 0
     for i, l in enumerate(lines):
         if l.startswith("YEAR"):
-            data_start = i + 1
+            start = i + 1
             break
 
-    rows = [x.strip().split(",") for x in lines[data_start:] if len(x.split(",")) >= 4]
+    rows = [x.strip().split(",") for x in lines[start:] if len(x.split(",")) >= 4]
 
-    for row in reversed(rows):
+    for r in reversed(rows):
         try:
-            rain = float(row[2])
-            temp = float(row[3])
-            return rain, temp
+            return float(r[2]), float(r[3])
         except:
             continue
 
@@ -96,7 +94,7 @@ def get_urban(district):
     return 0
 
 
-# ---------------- MAIN PREDICTION ----------------
+# ---------------- MAIN ----------------
 
 def get_prediction(state, district, target_date):
 
@@ -126,16 +124,14 @@ def get_prediction(state, district, target_date):
     weekly_values = weekly.values
     weekly_time = weekly.index
 
-    # -------- FORECAST ENGINE --------
+    # -------- FORECAST --------
 
     last_year = weekly_values[-52:]
 
     seasonal_delta = np.diff(last_year)
-    seasonal_delta = np.clip(
-        seasonal_delta,
-        -MAX_WEEKLY_CHANGE,
-        MAX_WEEKLY_CHANGE
-    )
+    seasonal_delta = np.clip(seasonal_delta,
+                             -MAX_WEEKLY_CHANGE,
+                              MAX_WEEKLY_CHANGE)
 
     noise_std = np.std(np.diff(weekly_values))
     noise = np.random.normal(0, noise_std * NOISE_SCALE, FUTURE_WEEKS)
@@ -177,12 +173,12 @@ def get_prediction(state, district, target_date):
 
     # -------- TARGET PICK --------
 
-    target_date = datetime.strptime(target_date, "%d/%m/%Y")
+    target_date_dt = datetime.strptime(target_date, "%d/%m/%Y")
 
     pred_value = None
 
     for d, v in zip(future_dates, forecast):
-        if d.date() >= target_date.date():
+        if d.date() >= target_date_dt.date():
             pred_value = round(float(v), 3)
             break
 
@@ -202,7 +198,7 @@ def get_prediction(state, district, target_date):
     soil = get_soil(district)
     urban = get_urban(district)
 
-    month = target_date.month
+    month = target_date_dt.month
 
     sin_month = np.sin(2 * np.pi * month / 12)
     cos_month = np.cos(2 * np.pi * month / 12)
@@ -217,24 +213,52 @@ def get_prediction(state, district, target_date):
 
     soil_val = soil_map.get(soil, 0)
 
-    # -------- HISTORY + PRED CHART DATA --------
+    # -------- WEEKLY CHART --------
 
-    history = []
-    prediction = []
+    weekly_history = []
+    weekly_prediction = []
 
     for t, v in zip(weekly_time, weekly_values):
-        history.append({
+        weekly_history.append({
             "x": t.strftime("%Y-%m-%d"),
             "y": round(float(v), 3)
         })
 
     for t, v in zip(future_dates, forecast):
-        prediction.append({
+        weekly_prediction.append({
             "x": t.strftime("%Y-%m-%d"),
             "y": round(float(v), 3)
         })
 
-    # -------- FINAL OUTPUT --------
+    # -------- MONTHLY CHART --------
+
+    monthly = base.resample("ME").mean().dropna()
+
+    monthly_history = []
+
+    for t, v in zip(monthly.index, monthly.values):
+        monthly_history.append({
+            "x": t.strftime("%Y-%m"),
+            "y": round(float(v), 3)
+        })
+
+    monthly_prediction = monthly_history[-6:]  # smooth continuation look
+
+    # -------- SIX MONTH AGG --------
+
+    six_hist = []
+    six_pred = []
+
+    hist_slice = weekly_history[-26:]
+    pred_slice = weekly_prediction[:26]
+
+    for p in hist_slice:
+        six_hist.append(p)
+
+    for p in pred_slice:
+        six_pred.append(p)
+
+    # -------- FINAL RETURN --------
 
     return {
 
@@ -251,9 +275,21 @@ def get_prediction(state, district, target_date):
             month,
             sin_month,
             cos_month,
-            0, 0, 0, 0   # padding for 12-feature RF model
+            0, 0, 0, 0
         ],
 
-        "history": history,
-        "prediction": prediction
+        "weekly": {
+            "history": weekly_history,
+            "prediction": weekly_prediction
+        },
+
+        "monthly": {
+            "history": monthly_history,
+            "prediction": monthly_prediction
+        },
+
+        "six_month": {
+            "history": six_hist,
+            "prediction": six_pred
+        }
     }
