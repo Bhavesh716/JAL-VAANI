@@ -40,8 +40,6 @@ def get_prediction(state, district, target_date):
         return {"status": "error", "reason": "insufficient rows"}
 
 
-    # ================= SARIMA BASE =================
-
     temp = pd.DataFrame({
         "date": df[DATE_COL],
         "val": df[VALUE_COL]
@@ -58,7 +56,7 @@ def get_prediction(state, district, target_date):
     weekly_time = weekly.index
 
 
-    # ================= SARIMA FORECAST =================
+    # ---------------- SARIMA CORE ----------------
 
     last_year = weekly_values[-52:]
 
@@ -103,7 +101,6 @@ def get_prediction(state, district, target_date):
             val = MIN_LEVEL
 
         forecast.append(val)
-
         current = val
 
 
@@ -120,12 +117,12 @@ def get_prediction(state, district, target_date):
     )
 
 
-    # ================= predicted_wl =================
+    # ---------------- predicted_wl ----------------
 
     predicted_wl = round(float(forecast[-1]), 3)
 
 
-    # ================= SIX MONTH (RAW SARIMA) =================
+    # ---------------- SIX MONTH RAW ----------------
 
     six_hist = []
     six_pred = []
@@ -143,13 +140,13 @@ def get_prediction(state, district, target_date):
         })
 
 
-    # ================= WEEKLY CHART =================
+    # ---------------- WEEKLY (SAME AS SARIMA BASE) ----------------
 
     weekly_hist = six_hist.copy()
     weekly_pred = six_pred.copy()
 
 
-    # ================= MONTHLY AGGREGATION =================
+    # ---------------- MONTHLY AGG ----------------
 
     hist_df = pd.DataFrame({
         "date": weekly_time,
@@ -182,13 +179,38 @@ def get_prediction(state, district, target_date):
         })
 
 
-    # ================= FINAL RESPONSE =================
+    # ---------------- FEATURES (ONLY ADDITION) ----------------
+
+    target_date = datetime.strptime(target_date, "%d/%m/%Y")
+
+    month = target_date.month
+
+    sin_month = np.sin(2 * np.pi * month / 12)
+    cos_month = np.cos(2 * np.pi * month / 12)
+
+
+    features = [
+        predicted_wl,
+        0,      # rain placeholder
+        0,      # evapo placeholder
+        0,      # soil placeholder
+        0,      # urban placeholder
+        month,
+        sin_month,
+        cos_month,
+        0, 0, 0, 0   # padding (12 total)
+    ]
+
+
+    # ---------------- FINAL OUTPUT ----------------
 
     return {
 
         "status": "ok",
 
         "predicted_wl": predicted_wl,
+
+        "features": features,
 
         "weekly": {
             "history": weekly_hist,
