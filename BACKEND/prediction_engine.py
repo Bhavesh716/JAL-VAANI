@@ -20,7 +20,7 @@ MIN_LEVEL = -150
 def get_prediction(state, district, target_date):
 
     file_path = os.path.join(
-        ROOT, "WATER_DATA", state, district.replace(" ", "_") + ".csv"
+        ROOT, "WATER_DATA", state, district + ".csv"
     )
 
     if not os.path.exists(file_path):
