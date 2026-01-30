@@ -2,6 +2,8 @@ from fastapi import FastAPI, Depends
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy import Text, DateTime
+from datetime import datetime
 from BACKEND.latest_water_api import get_latest_water_snapshot
 from BACKEND.search_data_engine import get_district_stats
 from BACKEND.analysis_engine import get_analysis
@@ -35,6 +37,26 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     password = Column(String, nullable=False)
     user_role = Column(String, default="citizen")
+
+
+class Notification(Base):
+
+    __tablename__ = "notifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    message = Column(String, nullable=False)
+    type = Column(String, nullable=False)  
+    created_at = Column(DateTime, default=datetime.utcnow)
+    deleted_by = Column(Text, default="")
+
+Base.metadata.create_all(bind=engine)
+
+
+def is_deleted_for_user(deleted_by, email):
+    if not deleted_by:
+        return False
+    users = deleted_by.split(",")
+    return email in users
 
 
 
@@ -170,3 +192,75 @@ def predict(state: str, district: str, date: str):
         "monthly": result["monthly"],
         "six_month": result["six_month"]
     }
+
+@app.get("/notifications")
+def get_notifications(email: str, db: Session = Depends(get_db)):
+
+    notifs = db.query(Notification).order_by(Notification.id.desc()).all()
+
+    result = []
+
+    for n in notifs:
+
+        if is_deleted_for_user(n.deleted_by, email):
+            continue
+
+        result.append({
+            "id": n.id,
+            "message": n.message,
+            "type": n.type,
+            "time": n.created_at.strftime("%d %b %Y %H:%M")
+        })
+
+    return result
+
+@app.post("/delete_notification")
+def delete_notification(id: int, email: str, db: Session = Depends(get_db)):
+
+    notif = db.query(Notification).filter(Notification.id == id).first()
+
+    if not notif:
+        return {"status": "fail"}
+
+    if notif.deleted_by:
+        notif.deleted_by += "," + email
+    else:
+        notif.deleted_by = email
+
+    db.commit()
+
+    return {"status": "ok"}
+
+
+@app.post("/clear_all_notifications")
+def clear_all_notifications(email: str, db: Session = Depends(get_db)):
+
+    notifs = db.query(Notification).all()
+
+    for n in notifs:
+
+        if is_deleted_for_user(n.deleted_by, email):
+            continue
+
+        if n.deleted_by:
+            n.deleted_by += "," + email
+        else:
+            n.deleted_by = email
+
+    db.commit()
+
+    return {"status": "ok"}
+
+
+@app.post("/add_notification")
+def add_notification(message: str, type: str, db: Session = Depends(get_db)):
+
+    notif = Notification(
+        message=message,
+        type=type
+    )
+
+    db.add(notif)
+    db.commit()
+
+    return {"status": "ok"}
