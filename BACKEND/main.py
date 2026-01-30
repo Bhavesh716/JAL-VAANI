@@ -150,29 +150,23 @@ def predict(state: str, district: str, date: str):
     result = get_prediction(state, district, date)
 
     if not result or result.get("status") != "ok":
-        return {
-            "status": "no_data"
-        }
-
+        return {"status": "no_data"}
     recharge_value = None
 
     try:
         features = result["features"]
         recharge_value = recharge_model.predict([features])[0]
-        recharge_value = round(float(recharge_value), 2)
+        recharge_value = float(round(recharge_value, 2))
 
     except Exception as e:
+        print("Recharge prediction error:", e)
         recharge_value = None
 
     return {
         "status": "ok",
-
         "predicted_wl": result["predicted_wl"],
-
         "predicted_recharge": recharge_value,
-
         "weekly": result["weekly"],
         "monthly": result["monthly"],
         "six_month": result["six_month"]
     }
-
