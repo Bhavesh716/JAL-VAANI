@@ -76,7 +76,7 @@ def get_analysis(state, district):
     ]
 
     # -------- MONTHLY --------
-    monthly = base.resample("M").mean().dropna()
+    monthly = base.resample("ME").mean().dropna()
 
     monthly_vals = smooth_series(monthly)
 
@@ -89,7 +89,7 @@ def get_analysis(state, district):
     ]
 
     # -------- SEASONAL (Quarter) --------
-    seasonal = base.resample("Q").mean().dropna()
+    seasonal = base.resample("QE").mean().dropna()
 
     seasonal_vals = smooth_series(seasonal)
 
