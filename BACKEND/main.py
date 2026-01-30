@@ -149,19 +149,34 @@ def predict(state: str, district: str, date: str):
 
     result = get_prediction(state, district, date)
 
-    if not result:
+    if not result or result.get("status") != "ok":
         return {
-            "status": "no_data"
+            "status": "no_data",
+            "reason": result.get("reason") if result else "prediction_failed"
         }
 
-    recharge = recharge_model.predict([[result["predicted_wl"]]])[0]
+    try:
 
-    return {
-        "status": "ok",
-        "predicted_wl": result["predicted_wl"],
-        "predicted_recharge": round(float(recharge), 2),
-        "weekly_chart": {
-            "history": result["history"],
-            "prediction": result["prediction"]
+        features = result["features"]
+
+        recharge = recharge_model.predict([features])[0]
+
+        return {
+            "status": "ok",
+
+            "predicted_wl": result["predicted_wl"],
+
+            "predicted_recharge": round(float(recharge), 2),
+
+            "weekly_chart": {
+                "history": result["history"],
+                "prediction": result["prediction"]
+            }
         }
-    }
+
+    except Exception as e:
+
+        return {
+            "status": "error",
+            "reason": str(e)
+        }
