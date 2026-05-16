@@ -7,7 +7,7 @@ Real government sensor data + NASA climate data + Time-Series Modeling + Machine
 Fully automated with incremental updates and cloud deployment ready.
 
 
-.
+
 ## 🚀 What Is This Project?
 
 This project is a production-style groundwater analytics system that:
