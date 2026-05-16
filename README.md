@@ -6,7 +6,7 @@ End-to-End Automated Groundwater Forecasting & Recharge Prediction Platform
 Real government sensor data + NASA climate data + Time-Series Modeling + Machine Learning
 Fully automated with incremental updates and cloud deployment ready.
 
-.
+
 
 ## 🚀 What Is This Project?
 
